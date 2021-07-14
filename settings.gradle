@@ -1,0 +1,5 @@
+rootProject.name = 'event-sourced-warehouse'
+include('esw-core')
+include('esw-postgres')
+include('esw-application')
+

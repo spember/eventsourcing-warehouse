@@ -1,0 +1,58 @@
+plugins {
+    id("com.github.johnrengelman.shadow") version "6.1.0"
+    id("io.micronaut.application") version "1.3.3"
+}
+
+
+
+micronaut {
+    runtime("netty")
+    testRuntime("junit5")
+    processing {
+        incremental(true)
+        annotations("demo.pember.eswarehouse.*")
+    }
+}
+
+dependencies {
+    // local projects
+    implementation project(":esw-core")
+    implementation project(":esw-postgres")
+    // annotations
+    annotationProcessor "io.micronaut:micronaut-inject-java"
+    annotationProcessor "io.micronaut:micronaut-validation"
+    // kotlin
+    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:${kotlinVersion}")
+    implementation("org.jetbrains.kotlin:kotlin-reflect:${kotlinVersion}")
+    // micronaut
+    implementation("io.micronaut:micronaut-validation")
+    implementation("io.micronaut.kotlin:micronaut-kotlin-runtime")
+    implementation("io.micronaut:micronaut-runtime")
+    implementation("io.micronaut:micronaut-http-client")
+    // database
+    implementation("org.flywaydb:flyway-core:7.10.0")
+//    implementation("org.postgresql:postgresql:${psqlVersion}")
+//    implementation('org.jooq:jooq-kotlin:3.14.11')
+
+    // core
+    implementation("io.cqrs:cqrs-core:${cqrsioVersion}")
+    runtimeOnly("ch.qos.logback:logback-classic")
+    runtimeOnly("com.fasterxml.jackson.module:jackson-module-kotlin:2.9.4.1")
+
+    // TESTSSSS
+    testImplementation "org.testcontainers:postgresql:${tcVersion}"
+    testImplementation "org.testcontainers:junit-jupiter:${tcVersion}"
+
+    testImplementation("org.junit.jupiter:junit-jupiter-api")
+    testImplementation("io.micronaut.test:micronaut-test-junit5:2.3.7")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.7.1")
+}
+
+
+application {
+    mainClass.set("demo.pember.eswarehouse.ApplicationKt")
+}
+
+test {
+    useJUnitPlatform()
+}

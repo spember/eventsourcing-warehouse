@@ -1,0 +1,45 @@
+plugins {
+    id("org.jetbrains.kotlin.jvm") version "${kotlinVersion}" apply false
+    id("org.jetbrains.kotlin.kapt") version "${kotlinVersion}" apply false
+    id("org.jetbrains.kotlin.plugin.allopen") version "${kotlinVersion}" apply false
+}
+
+allprojects {
+    apply plugin: 'java'
+    apply plugin: "org.jetbrains.kotlin.jvm"
+    apply plugin: "org.jetbrains.kotlin.kapt"
+    apply plugin: "org.jetbrains.kotlin.plugin.allopen"
+
+    group = "demo.pember.eswarehouse"
+    version = '0.1.0-SNAPSHOT'
+
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        maven {
+            name = "GHPackages"
+            url = "https://maven.pkg.github.com/spember/cqrs-io"
+            credentials {
+                username = System.getenv("GITHUB_ACTOR")
+                password = System.getenv("GITHUB_TOKEN")
+            }
+        }
+    }
+
+    java {
+        sourceCompatibility = JavaVersion.toVersion("1.8")
+    }
+
+    tasks {
+        compileKotlin {
+            kotlinOptions {
+                jvmTarget = "1.8"
+            }
+        }
+        compileTestKotlin {
+            kotlinOptions {
+                jvmTarget = "1.8"
+            }
+        }
+    }
+}

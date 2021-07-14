@@ -1,0 +1,4 @@
+
+dependencies {
+    api("io.cqrs:cqrs-core:${cqrsioVersion}")
+}
