@@ -17,5 +17,6 @@ class SkuService(private val eventRepository: EventRepository) {
     fun fetch(skuCode: SkuCode): SKU? {
         return SKU(skuCode)
             .loadCurrentState(eventRepository)
+            .takeIf { sku -> !sku.isBare && sku.active }
     }
 }

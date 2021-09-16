@@ -16,8 +16,11 @@ import javax.inject.Inject
 class SkuController(@Inject private val skuService: SkuService) {
 
     @Get(value="{foo}", produces = [MediaType.APPLICATION_JSON])
-    fun index(foo: String): SkuDetails {
-        return SkuDetails.from(skuService.fetch(SkuCode(foo))!!)
+    fun fetch(foo: String): SkuDetails? {
+        return skuService.fetch(SkuCode(foo))?.let {
+            println("Ah I have sku: ${it}")
+            SkuDetails.from(it)
+        }
     }
 
     @Consumes(MediaType.APPLICATION_JSON)
