@@ -26,6 +26,12 @@ allprojects {
         }
     }
 
+    dependencies {
+        // kotlin
+        implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:${kotlinVersion}")
+        implementation("org.jetbrains.kotlin:kotlin-reflect:${kotlinVersion}")
+    }
+
     java {
         sourceCompatibility = JavaVersion.toVersion("1.8")
     }

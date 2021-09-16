@@ -34,7 +34,7 @@ import java.lang.RuntimeException
  *
  *
  */
-class SKU(skuCode: SkuCode): Aggregate<SkuCode>(skuCode) {
+class SKU(skuCode: SkuCode): Aggregate<SkuCode, SKU>(skuCode) {
 
     var name: String = ""
         private set
