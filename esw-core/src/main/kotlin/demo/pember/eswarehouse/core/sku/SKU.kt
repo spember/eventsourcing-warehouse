@@ -1,6 +1,7 @@
 package demo.pember.eswarehouse.core.sku
 
 import demo.pember.eswarehouse.core.commands.RegisterSku
+import demo.pember.eswarehouse.core.commands.UpdateMsrp
 import demo.pember.eswarehouse.core.identifiers.SkuCode
 import io.cqrs.core.Aggregate
 import io.cqrs.core.event.Event
@@ -75,6 +76,16 @@ class SKU(skuCode: SkuCode): Aggregate<SkuCode, SKU>(skuCode) {
         return result
     }
 
+    fun updateMsrp(command: UpdateMsrp): AggregateMutationResult<UpdateMsrp, SKU> {
+        val result = AggregateMutationResult(this, command)
+        if (!this.isBare && this.active) {
+            result.error(RuntimeException("Cannot update price on an invalid sku!"))
+        } else {
+            result.addEvents(this, MsrpUpdated(command.updatedPrice))
+        }
+        return result
+    }
+
     /**
      * The lifecycle of a SKU is generally fairly simple and involves creation, retirement, price adjustments, and
      * inventory changes.
@@ -86,12 +97,17 @@ class SKU(skuCode: SkuCode): Aggregate<SkuCode, SKU>(skuCode) {
             // if I need access to timestamps, user ids, or the core entity id, I can also pass along the Event or the
             // CoreData in the envelope
             SkuRegistered::class -> handle(envelope.event as SkuRegistered)
+            MsrpUpdated::class -> handle(envelope.event as MsrpUpdated)
 
         }
     }
 
     private fun handle(event: SkuRegistered) {
         this.name = event.name
+    }
+
+    private fun handle(event: MsrpUpdated) {
+        this.msrpInCents = event.updatedMsrp
     }
 
 

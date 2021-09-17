@@ -12,5 +12,4 @@ class RegisterSku(
     user: EmployeeId,
     val chosenSku: SkuCode,
     val name: String
-    ): Command<EmployeeId>(user, Instant.now()) {
-}
+    ): Command<EmployeeId>(user, Instant.now())

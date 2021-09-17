@@ -30,18 +30,14 @@ class SkuService(private val eventRepository: EventRepository) {
      */
 
     fun registerSku(command: RegisterSku): SKU {
-//        val result = SKU(command.chosenSku)
-//            .loadCurrentState(eventRepository)
-//            .register(command)
-//        eventRepository.write(result.uncommittedEventEnvelopes)
-////        return result.capturedAggregate
         return handleResultForLoadedSku(command.chosenSku) { loadedSku ->  loadedSku.register(command)}
             .capturedAggregate
     }
 
-//    fun updateMsrp(command: UpdateMsrp): SKU {
-////        handleResultForLoadedSku(command.code) {loadedSku ->   }
-//    }
+    fun updateMsrp(command: UpdateMsrp): SKU {
+        return handleResultForLoadedSku(command.code) {loadedSku ->  loadedSku.updateMsrp(command) }
+            .capturedAggregate
+    }
 
     /**
      * An internal wrapper for loaded the SKU to current state, deferring to a supplied aggregate mutation function,

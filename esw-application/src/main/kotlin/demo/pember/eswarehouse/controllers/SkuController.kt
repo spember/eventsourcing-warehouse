@@ -28,12 +28,12 @@ class SkuController(
 
     @Consumes(MediaType.APPLICATION_JSON)
     @Post
-    fun register(@Body parameters: RegisterSkuParameters): SkuDetails {
+    fun register(request: HttpRequest<RegisterSkuParameters>): SkuDetails {
         return SkuDetails.from(skuService.registerSku(
             RegisterSku(
-                EmployeeId("test@test.com"),
-                SkuCode(parameters.requestedCode),
-                parameters.name
+                userLookupService.determineEmployeeId(request),
+                SkuCode(request.body.get().requestedCode),
+                request.body.get().name
             )
         ))
     }

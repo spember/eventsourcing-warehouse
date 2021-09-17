@@ -11,12 +11,12 @@ import io.micronaut.http.HttpRequest
  */
 class UserLookupService {
 
-    fun determineEmployeeId(request: HttpRequest<Any>): EmployeeId {
-        return EmployeeId("test-employee@testing.com")
-//        return if (request.userPrincipal.isEmpty) {
-//
-//        } else {
-//            EmployeeId(request.userPrincipal.get().name)
-//        }
+    fun determineEmployeeId(request: HttpRequest<*>): EmployeeId {
+
+        return if (request.userPrincipal.isPresent) {
+            EmployeeId(request.userPrincipal.get().name)
+        } else {
+            EmployeeId("test-employee@testing.com")
+        }
     }
 }
