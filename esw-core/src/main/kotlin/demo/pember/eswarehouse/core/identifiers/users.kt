@@ -1,3 +1,5 @@
+package demo.pember.eswarehouse.core.identifiers
+
 import io.cqrs.core.identifiers.UserId
 import java.util.*
 

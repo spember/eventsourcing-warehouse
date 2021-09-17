@@ -22,7 +22,7 @@ import java.util.Properties
 @Factory
 class CoreBeanFactory {
     companion object {
-        val log = LoggerFactory.getLogger(CoreBeanFactory::class.java)
+        val log = LoggerFactory.getLogger(CoreBeanFactory::class.java)!!
     }
 
     @Singleton

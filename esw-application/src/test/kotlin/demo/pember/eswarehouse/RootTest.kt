@@ -2,8 +2,7 @@ package demo.pember.eswarehouse
 
 import demo.pember.eswarehouse.util.BaseLifecycleTests
 import io.micronaut.http.HttpRequest
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 
 class RootTest: BaseLifecycleTests() {

@@ -1,6 +1,6 @@
 package demo.pember.eswarehouse.core.commands
 
-import EmployeeId
+import demo.pember.eswarehouse.core.identifiers.EmployeeId
 import demo.pember.eswarehouse.core.identifiers.SkuCode
 import io.cqrs.core.Command
 import java.time.Instant
