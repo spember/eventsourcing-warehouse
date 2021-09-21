@@ -1,7 +1,7 @@
 package io.cqrs.core.event
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import demo.pember.eswarehouse.core.sku.SkuRegistered
+import demo.pember.eswarehouse.core.sku.events.SkuRegistered
 import demo.pember.eswarehouse.postgres.tables.Events.EVENTS
 import io.cqrs.core.identifiers.EntityId
 import org.jooq.DSLContext
@@ -9,7 +9,11 @@ import org.jooq.JSONB
 import java.time.LocalDateTime
 import java.time.ZoneOffset.UTC
 
-class PostgresEventRepository(private val jooq: DSLContext, private val objectMapper: ObjectMapper  ): EventRepository {
+class PostgresEventRepository(
+    private val jooq: DSLContext,
+    private val eventRegistry: EventRegistry,
+    private val objectMapper: ObjectMapper
+    ): EventRepository {
 
     override fun listAllByIds(vararg p0: EntityId<*>): List<EventEnvelope<out Event, out EntityId<*>>> {
         // construct a little lookup for all of the entityIds; when we retrieve the values from
@@ -26,7 +30,7 @@ class PostgresEventRepository(private val jooq: DSLContext, private val objectMa
             .flatMap { (rawId, eventRecords) ->
                 eventRecords.map {
                     EventEnvelope(
-                        objectMapper.readValue(it.data.data(), SkuRegistered::class.java),
+                        objectMapper.readValue(it.data.data(), eventRegistry.classFromAlias(it.type).get()),
                         EventCoreData(
                             entityIdLookup[rawId]!!, // we grouped by it so it should be here
                             it.revision,

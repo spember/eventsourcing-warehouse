@@ -1,6 +1,7 @@
 package demo.pember.eswarehouse.controllers
 
 import demo.pember.eswarehouse.core.commands.RegisterSku
+import demo.pember.eswarehouse.core.commands.UpdateMsrp
 import demo.pember.eswarehouse.core.identifiers.EmployeeId
 import demo.pember.eswarehouse.core.identifiers.SkuCode
 import demo.pember.eswarehouse.core.sku.SkuService
@@ -19,9 +20,9 @@ class SkuController(
     @Inject private val userLookupService: UserLookupService
     ) {
 
-    @Get(value="{foo}", produces = [MediaType.APPLICATION_JSON])
-    fun fetch(foo: String): SkuDetails? {
-        return skuService.fetch(SkuCode(foo))?.let {
+    @Get(value="{skuCode}", produces = [MediaType.APPLICATION_JSON])
+    fun fetch(skuCode: String): SkuDetails? {
+        return skuService.fetch(SkuCode(skuCode))?.let {
             SkuDetails.from(it)
         }
     }
@@ -37,12 +38,18 @@ class SkuController(
             )
         ))
     }
-//
-//    @Consumes(MediaType.APPLICATION_JSON)
-//    @Patch
-//    fun adjustMsrp(request: HttpRequest<Long>): SkuDetails {
-//
-//
-//    }
+
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Put(value="{skuCode}", produces = [MediaType.APPLICATION_JSON])
+    fun adjustMsrp(request: HttpRequest<SkuPriceParameters>, skuCode: String): SkuDetails {
+        val parameters = request.body.get()
+        return SkuDetails.from(skuService.updateMsrp(
+            UpdateMsrp(
+                userLookupService.determineEmployeeId(request),
+                SkuCode(skuCode),
+                parameters.requestedMsrp
+            )
+        ))
+    }
 
 }

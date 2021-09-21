@@ -3,6 +3,9 @@ package demo.pember.eswarehouse.core.sku
 import demo.pember.eswarehouse.core.commands.RegisterSku
 import demo.pember.eswarehouse.core.commands.UpdateMsrp
 import demo.pember.eswarehouse.core.identifiers.SkuCode
+import demo.pember.eswarehouse.core.sku.events.MsrpUpdated
+import demo.pember.eswarehouse.core.sku.events.PriceUpdated
+import demo.pember.eswarehouse.core.sku.events.SkuRegistered
 import io.cqrs.core.Aggregate
 import io.cqrs.core.event.Event
 import io.cqrs.core.event.EventEnvelope
@@ -71,15 +74,22 @@ class SKU(skuCode: SkuCode): Aggregate<SkuCode, SKU>(skuCode) {
         if (!this.isBare) {
             result.error(RuntimeException("A Sku already exists with code ${command.chosenSku}"))
         } else {
-            result.addEvents(this, SkuRegistered(command.name))
+            result.addEvents(this,
+                SkuRegistered(command.name),
+                // these 'initializing' events aren't strictly necessary, but here for illustration
+                MsrpUpdated(0),
+                PriceUpdated(0)
+            )
         }
         return result
     }
 
     fun updateMsrp(command: UpdateMsrp): AggregateMutationResult<UpdateMsrp, SKU> {
         val result = AggregateMutationResult(this, command)
-        if (!this.isBare && this.active) {
+        if (this.isBare || !this.active) {
             result.error(RuntimeException("Cannot update price on an invalid sku!"))
+        } else if (command.updatedPrice <= 0) {
+            result.error(IllegalStateException("Price cannot be 0 or less"))
         } else {
             result.addEvents(this, MsrpUpdated(command.updatedPrice))
         }
@@ -98,7 +108,7 @@ class SKU(skuCode: SkuCode): Aggregate<SkuCode, SKU>(skuCode) {
             // CoreData in the envelope
             SkuRegistered::class -> handle(envelope.event as SkuRegistered)
             MsrpUpdated::class -> handle(envelope.event as MsrpUpdated)
-
+            PriceUpdated::class -> handle(envelope.event as PriceUpdated)
         }
     }
 
@@ -108,7 +118,10 @@ class SKU(skuCode: SkuCode): Aggregate<SkuCode, SKU>(skuCode) {
 
     private fun handle(event: MsrpUpdated) {
         this.msrpInCents = event.updatedMsrp
+        this.priceInCents = event.updatedMsrp // keeping price in line until the price is adjusted
     }
 
-
+    private fun handle(event: PriceUpdated) {
+        this.priceInCents = event.updatedPriceInCents
+    }
 }

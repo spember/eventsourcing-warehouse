@@ -43,7 +43,10 @@ class SkuService(private val eventRepository: EventRepository) {
      * An internal wrapper for loaded the SKU to current state, deferring to a supplied aggregate mutation function,
      * then persisting the resulting eventEnvelopes, if any
      */
-    private fun <E: UserId<*>, C: Command<E>> handleResultForLoadedSku(skuCode: SkuCode, fn: (loadedSku: SKU) -> AggregateMutationResult<C, SKU>): AggregateMutationResult<C, SKU> {
+    private fun <E: UserId<*>, C: Command<E>> handleResultForLoadedSku(
+        skuCode: SkuCode,
+        fn: (loadedSku: SKU) -> AggregateMutationResult<C, SKU>
+    ): AggregateMutationResult<C, SKU> {
         val result = fn(SKU(skuCode).loadCurrentState(eventRepository))
         eventRepository.write(result.uncommittedEventEnvelopes)
         return result

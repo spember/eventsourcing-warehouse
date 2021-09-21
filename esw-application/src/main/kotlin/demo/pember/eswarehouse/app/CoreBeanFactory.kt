@@ -3,6 +3,7 @@ package demo.pember.eswarehouse.app
 import com.fasterxml.jackson.databind.ObjectMapper
 import demo.pember.eswarehouse.app.config.DatabaseConfiguration
 import demo.pember.eswarehouse.core.sku.SkuService
+import io.cqrs.core.event.EventRegistry
 import io.cqrs.core.event.EventRepository
 import io.cqrs.core.event.PostgresEventRepository
 import io.micronaut.context.annotation.Factory
@@ -51,11 +52,17 @@ class CoreBeanFactory {
     }
 
     @Singleton
-    fun createEventRepository(jooq: DSLContext, objectMapper: ObjectMapper): EventRepository =
-        PostgresEventRepository(jooq, objectMapper)
-
+    fun createEventRepository(
+        jooq: DSLContext,
+        eventRegistry: EventRegistry,
+        objectMapper: ObjectMapper
+    ): EventRepository =
+        PostgresEventRepository(jooq, eventRegistry, objectMapper)
 
     // the following are the actual core beans. Consider moving the above to a different module
+
+    @Singleton
+    fun createEventRegistry(): EventRegistry  = EventRegistry()
 
     @Singleton
     fun createSkuService(eventRepository: EventRepository): SkuService = SkuService(eventRepository)

@@ -27,7 +27,11 @@ class SkuDetails(
 
     companion object {
         fun from (entity: SKU) : SkuDetails {
-            return SkuDetails(entity.id.value, entity.name, entity.priceInCents)
+            return SkuDetails(
+                entity.id.value,
+                entity.name,
+                if (entity.priceInCents <= entity.msrpInCents) entity.priceInCents else entity.msrpInCents
+            )
         }
     }
 }
