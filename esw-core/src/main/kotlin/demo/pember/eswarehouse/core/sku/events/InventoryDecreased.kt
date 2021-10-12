@@ -1,4 +1,5 @@
 package demo.pember.eswarehouse.core.sku.events
 
-class InventoryDecreased {
-}
+import io.cqrs.core.event.Event
+
+class InventoryDecreased: Event

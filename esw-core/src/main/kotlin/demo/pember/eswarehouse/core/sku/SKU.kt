@@ -3,6 +3,7 @@ package demo.pember.eswarehouse.core.sku
 import demo.pember.eswarehouse.core.commands.RegisterSku
 import demo.pember.eswarehouse.core.commands.UpdateMsrp
 import demo.pember.eswarehouse.core.identifiers.SkuCode
+import demo.pember.eswarehouse.core.sku.events.InventoryIncreased
 import demo.pember.eswarehouse.core.sku.events.MsrpUpdated
 import demo.pember.eswarehouse.core.sku.events.PriceUpdated
 import demo.pember.eswarehouse.core.sku.events.SkuRegistered
@@ -104,11 +105,11 @@ class SKU(skuCode: SkuCode): Aggregate<SkuCode, SKU>(skuCode) {
      */
     override fun handleEventApply(envelope: EventEnvelope<out Event, out EntityId<*>>) {
         when(envelope.event::class) {
-            // if I need access to timestamps, user ids, or the core entity id, I can also pass along the Event or the
-            // CoreData in the envelope
+            // if I need access to timestamps, user ids, or the core entity id, I can also pass along the EventEnvelope
             SkuRegistered::class -> handle(envelope.event as SkuRegistered)
             MsrpUpdated::class -> handle(envelope.event as MsrpUpdated)
             PriceUpdated::class -> handle(envelope.event as PriceUpdated)
+            InventoryIncreased::class -> println(envelope)
         }
     }
 
