@@ -65,6 +65,7 @@ class SkuTest: BaseLifecycleTests() {
             .body()
         assertEquals(finalSkuDetails!!.code, code)
         assertEquals(finalSkuDetails.name, "Singing Knight")
+        assertEquals(finalSkuDetails.revision, 3)
     }
 
     @Test

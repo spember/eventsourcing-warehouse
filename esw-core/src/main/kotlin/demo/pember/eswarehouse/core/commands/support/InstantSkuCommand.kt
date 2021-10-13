@@ -1,4 +1,4 @@
-package demo.pember.eswarehouse.core.commands
+package demo.pember.eswarehouse.core.commands.support
 
 import demo.pember.eswarehouse.core.identifiers.EmployeeId
 import demo.pember.eswarehouse.core.identifiers.SkuCode

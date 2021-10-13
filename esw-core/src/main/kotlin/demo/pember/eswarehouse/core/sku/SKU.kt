@@ -39,9 +39,17 @@ import java.lang.RuntimeException
  *
  *
  */
-class SKU(skuCode: SkuCode): Aggregate<SkuCode, SKU>(skuCode) {
+class SKU(code: SkuCode): Aggregate<SkuCode, SKU>(code) {
 
     var name: String = ""
+        private set
+
+    // how much we _should_ sell it for
+    var msrpInCents: Long = 0
+        private set
+
+    // how much we _are_ selling it for
+    var priceInCents: Long = 0
         private set
 
     // todo: change state of the class to reflect the state, rather than a boolean
@@ -52,14 +60,6 @@ class SKU(skuCode: SkuCode): Aggregate<SkuCode, SKU>(skuCode) {
         private set
 
     var categories: List<Categories> = mutableListOf()
-        private set
-
-    // how much we should sell it for
-    var msrpInCents: Long = 0
-        private set
-
-    // how much we are selling it for
-    var priceInCents: Long = 0
         private set
 
     var currentInventory: Int = 0
@@ -119,7 +119,9 @@ class SKU(skuCode: SkuCode): Aggregate<SkuCode, SKU>(skuCode) {
 
     private fun handle(event: MsrpUpdated) {
         this.msrpInCents = event.updatedMsrp
-        this.priceInCents = event.updatedMsrp // keeping price in line until the price is adjusted
+        this.priceInCents = event.updatedMsrp
+        // keeping price in lockstep with msrp until it is adjusted via
+        // an 'discountApplied' event
     }
 
     private fun handle(event: PriceUpdated) {

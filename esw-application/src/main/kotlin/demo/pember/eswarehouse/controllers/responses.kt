@@ -21,6 +21,7 @@ import demo.pember.eswarehouse.core.sku.SKU
  */
 class SkuDetails(
     @JsonProperty("code") val code: String,
+    @JsonProperty("revision") val revision: Int,
     @JsonProperty("name") val name: String,
     @JsonProperty("priceInCents") val priceInCents: Long,
     ) {
@@ -29,9 +30,23 @@ class SkuDetails(
         fun from (entity: SKU) : SkuDetails {
             return SkuDetails(
                 entity.id.value,
+                entity.revision,
                 entity.name,
                 if (entity.priceInCents <= entity.msrpInCents) entity.priceInCents else entity.msrpInCents
             )
         }
     }
 }
+
+/**
+ * Container for Event Data intended for Public consumption.
+ * For test purposes this is effectively a minimized merging of the event envelope and the actual fields, but this
+ * could be a location for stripping out sensitive fields
+ */
+class PublicEvent(
+    @JsonProperty("entityId") val entityId: String,
+    @JsonProperty("revision") val revision: Int,
+    @JsonProperty("user") val userId: String,
+    @JsonProperty("timeOccurred") val timeOccurred: String,
+    @JsonProperty("event") val eventName: String,
+)
